@@ -1,0 +1,21 @@
+.{
+    .name = "chipz-kitty",
+    .version = "0.0.0",
+    .dependencies = .{
+        .chipz = .{
+            .url = "../chipz",
+            .hash = "1220b7a49f7cbb76a1d5bd23a42f38f19ef7012d0ba0375e44173b26454e898a3b2b",
+        },
+        .vaxis = .{
+            .url = "git+https://github.com/rockorager/libvaxis.git#2d5cd811a4e673b3b0d8303512e4934c6ceb6d58",
+            .hash = "1220d49524b81bc8a371237b9b68620c2042a12d1b1492c0cd59148bfbc2873bd542",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "LICENSE",
+        "README.md",
+    },
+}
