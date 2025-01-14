@@ -3,8 +3,8 @@
     .version = "0.0.0",
     .dependencies = .{
         .chipz = .{
-            .url = "../chipz",
-            .hash = "1220b7a49f7cbb76a1d5bd23a42f38f19ef7012d0ba0375e44173b26454e898a3b2b",
+            .url = "git+https://github.com/floooh/chipz.git?ref=0.13.0#e3a9951d5e41a55ca20a44288e40a7624d337a52",
+            .hash = "1220f6fa5c0727b46d434f838100883c630484e3c83d0389b2ab7393833ea5b1d263",
         },
         .vaxis = .{
             .url = "git+https://github.com/rockorager/libvaxis.git#2d5cd811a4e673b3b0d8303512e4934c6ceb6d58",
