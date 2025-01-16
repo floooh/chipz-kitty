@@ -9,7 +9,7 @@ Tested in Ghostty and Kitty on macOS.
 
 ## Build and Run
 
-Currently requires `Zig 0.13.0` (because of libvaxis depenency).
+Currently requires `Zig 0.13.0` (because of libvaxis dependency).
 
 In Ghostty or Kitty terminal:
 
