@@ -11,7 +11,7 @@ Tested in Ghostty and Kitty on macOS.
 
 Currently requires `Zig 0.13.0` (because of libvaxis depenency).
 
-In Ghostty or Kitty:
+In Ghostty or Kitty terminal:
 
 ```
 zig build --release=fast run-pengo
