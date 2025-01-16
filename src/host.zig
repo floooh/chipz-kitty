@@ -88,6 +88,7 @@ pub fn deinit() void {
 }
 
 pub fn audioSampleRate() i32 {
+    assert(initialized);
     if (disable_audio) {
         return 44100;
     } else {
@@ -96,6 +97,7 @@ pub fn audioSampleRate() i32 {
 }
 
 pub fn pushAudio(samples: []const f32) void {
+    assert(initialized);
     if (!disable_audio) {
         _ = saudio.push(&samples[0], @intCast(samples.len));
     }
@@ -167,6 +169,7 @@ pub fn drawFrame(opts: FrameOptions) !void {
 }
 
 pub fn pollEvents() !bool {
+    assert(initialized);
     var running = true;
     while (ev_loop.tryEvent()) |ev| {
         switch (ev) {
@@ -186,6 +189,7 @@ pub fn pollEvents() !bool {
 }
 
 pub fn frameTimeMicroSeconds() u32 {
+    assert(initialized);
     const cur_time = std.time.microTimestamp();
     const frame_time = std.math.clamp(cur_time - last_time, 1000, 24000);
     last_time = cur_time;
