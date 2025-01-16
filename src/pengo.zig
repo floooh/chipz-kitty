@@ -1,4 +1,5 @@
 const std = @import("std");
+const Key = @import("vaxis").Key;
 const namco = @import("chipz").systems.namco;
 const host = @import("host.zig");
 
@@ -7,7 +8,10 @@ const Pengo = namco.Type(.Pengo);
 var sys: Pengo = undefined;
 
 pub fn main() !void {
-    try host.init(.{ .allocator = std.heap.c_allocator });
+    try host.init(.{
+        .allocator = std.heap.c_allocator,
+        .key_cb = onKey,
+    });
     defer host.deinit();
 
     sys.initInPlace(.{
@@ -40,6 +44,28 @@ pub fn main() !void {
         try host.drawFrame(.{ .display_info = sys.displayInfo() });
         // FIXME
         std.time.sleep(16_666_667);
+    }
+}
+
+fn keyToButton(key: Key) Pengo.Input {
+    return switch (key.codepoint) {
+        Key.left => .{ .p1_left = true },
+        Key.right => .{ .p1_right = true },
+        Key.up => .{ .p1_up = true },
+        Key.down => .{ .p1_down = true },
+        Key.space => .{ .p1_button = true },
+        '1' => .{ .p1_coin = true },
+        '2' => .{ .p2_coin = true },
+        else => .{ .p1_start = true },
+    };
+}
+
+fn onKey(pressed: bool, key: Key) void {
+    const btn = keyToButton(key);
+    if (pressed) {
+        sys.setInput(btn);
+    } else {
+        sys.clearInput(btn);
     }
 }
 
