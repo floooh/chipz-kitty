@@ -15,10 +15,9 @@ pub fn main() !void {
     defer host.deinit();
 
     sys.initInPlace(.{
-        // FIXME: audio
         .audio = .{
-            .sample_rate = 44100,
-            .callback = dummyAudioCallback,
+            .sample_rate = @intCast(host.audioSampleRate()),
+            .callback = host.pushAudio,
         },
         .roms = .{
             .sys_0000_0FFF = @embedFile("roms/pengo/ep5120.8"),
@@ -42,8 +41,9 @@ pub fn main() !void {
     while (try host.pollEvents()) {
         _ = sys.exec(host.frameTimeMicroSeconds());
         try host.drawFrame(.{ .display_info = sys.displayInfo() });
-        // FIXME
-        std.time.sleep(16_666_667);
+        // waiting a couple of millisecs here seems to help with
+        // Ghostty not occupying 100% CPU (at least on macOS)
+        std.time.sleep(4_000_000);
     }
 }
 
@@ -67,8 +67,4 @@ fn onKey(pressed: bool, key: Key) void {
     } else {
         sys.clearInput(btn);
     }
-}
-
-fn dummyAudioCallback(samples: []const f32) void {
-    _ = samples;
 }

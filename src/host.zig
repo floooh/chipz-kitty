@@ -1,8 +1,10 @@
 const std = @import("std");
-const assert = std.debug.assert;
 const chipz = @import("chipz");
-const DisplayInfo = chipz.common.glue.DisplayInfo;
 const vaxis = @import("vaxis");
+const sokol = @import("sokol");
+const saudio = sokol.audio;
+const assert = std.debug.assert;
+const DisplayInfo = chipz.common.glue.DisplayInfo;
 const Window = vaxis.Window;
 const Image = vaxis.Image;
 const CellSize = Image.CellSize;
@@ -19,6 +21,7 @@ const KeyCallback = fn (down: bool, key: vaxis.Key) void;
 pub const InitOptions = struct {
     allocator: std.mem.Allocator,
     key_cb: *const KeyCallback,
+    disable_audio: bool = false,
 };
 
 pub const FrameOptions = struct {
@@ -39,11 +42,17 @@ var width = undefined;
 var height = undefined;
 var max_rgb_buffer: [max_width * max_height * bytes_per_pixel]u8 = undefined;
 var last_time: i64 = undefined;
+var disable_audio = false;
 
 pub fn init(opts: InitOptions) !void {
     assert(!initialized);
     allocator = opts.allocator;
     key_cb = opts.key_cb;
+    disable_audio = opts.disable_audio;
+
+    if (!disable_audio) {
+        saudio.setup(.{});
+    }
 
     tty = try vaxis.Tty.init();
     errdefer tty.deinit();
@@ -73,6 +82,23 @@ pub fn deinit() void {
     vx.deinit(allocator, tty.anyWriter());
     tty.deinit();
     initialized = false;
+    if (!disable_audio) {
+        saudio.shutdown();
+    }
+}
+
+pub fn audioSampleRate() i32 {
+    if (disable_audio) {
+        return 44100;
+    } else {
+        return saudio.sampleRate();
+    }
+}
+
+pub fn pushAudio(samples: []const f32) void {
+    if (!disable_audio) {
+        _ = saudio.push(&samples[0], @intCast(samples.len));
+    }
 }
 
 pub fn drawFrame(opts: FrameOptions) !void {

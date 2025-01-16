@@ -13,6 +13,11 @@ pub fn build(b: *Build) void {
         .optimize = optimize,
     });
 
+    const dep_sokol = b.dependency("sokol", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
     const dep_vaxis = b.dependency("vaxis", .{
         .target = target,
         .optimize = optimize,
@@ -23,6 +28,7 @@ pub fn build(b: *Build) void {
         .root_source_file = "src/pengo.zig",
         .mod_chipz = dep_chipz.module("chipz"),
         .mod_vaxis = dep_vaxis.module("vaxis"),
+        .mod_sokol = dep_sokol.module("sokol"),
         .target = target,
         .optimize = optimize,
     });
@@ -33,6 +39,7 @@ const EmulatorOptions = struct {
     root_source_file: []const u8,
     mod_chipz: *Module,
     mod_vaxis: *Module,
+    mod_sokol: *Module,
     target: ResolvedTarget,
     optimize: OptimizeMode,
 };
@@ -46,6 +53,7 @@ fn addEmulator(b: *Build, opts: EmulatorOptions) void {
     });
     exe.root_module.addImport("chipz", opts.mod_chipz);
     exe.root_module.addImport("vaxis", opts.mod_vaxis);
+    exe.root_module.addImport("sokol", opts.mod_sokol);
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);

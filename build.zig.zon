@@ -10,6 +10,10 @@
             .url = "git+https://github.com/rockorager/libvaxis.git#2d5cd811a4e673b3b0d8303512e4934c6ceb6d58",
             .hash = "1220d49524b81bc8a371237b9b68620c2042a12d1b1492c0cd59148bfbc2873bd542",
         },
+        .sokol = .{
+            .url = "git+https://github.com/floooh/sokol-zig.git#3443c2880afdcd8a6ecdd387174544e71c85ba87",
+            .hash = "1220b23309471165b60f40ba6a0979feecb9cbc110b512d7b30e02cd64909847aab5",
+        },
     },
     .paths = .{
         "build.zig",
