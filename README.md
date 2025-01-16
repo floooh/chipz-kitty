@@ -17,9 +17,13 @@ In Ghostty or Kitty terminal:
 zig build --release=fast run-pengo
 ```
 
-Then press `1` to insert a coin, and press `Enter` to start.
+## Usage
 
-In the game: arrow keys for direction and `Space` to push an ice block.
+Press `1` to insert a coin, and `Enter` to start.
+
+In the game: `Arrow Keys` for direction and `Space` to push an ice block.
+
+`Ctrl-C` to quit.
 
 ## Dependencies:
 
