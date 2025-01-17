@@ -122,24 +122,38 @@ pub fn drawFrame(display_info: DisplayInfo) !void {
     const dst_width = if (landscape) src_width else src_height;
     const dst_height = if (landscape) src_height else src_width;
     const dst_size = dst_width * dst_height;
-    const dst_u32 = max_rgba_buffer[0..dst_size];
+    const dst = max_rgba_buffer[0..dst_size];
 
     // convert framebuffer (including landscape => portrait rotation)
-    const palette = info.palette.?;
-    const src_pitch: usize = @intCast(info.fb.dim.width);
-    const src: []const u8 = info.fb.buffer.?.Palette8;
-    var idx: usize = 0;
-    for (0..src_width) |x| {
-        for (0..src_height) |y| {
-            const p: u8 = src[(src_height - 1 - y) * src_pitch + x];
-            dst_u32[idx] = palette[p];
-            idx += 1;
+    if (info.palette) |palette| {
+        // framebuffer is 8-bit palettized format (8-bit indices into 32-bit RGBA palette)
+        const src: []const u8 = info.fb.buffer.?.Palette8;
+        const src_pitch: usize = @intCast(info.fb.dim.width);
+        var idx: usize = 0;
+        for (0..src_width) |x| {
+            for (0..src_height) |y| {
+                const p: u8 = src[(src_height - 1 - y) * src_pitch + x];
+                dst[idx] = palette[p];
+                idx += 1;
+            }
+        }
+    } else {
+        // framebuffer is already in RGBA8
+        const src: []const u32 = info.fb.buffer.?.Rgba8;
+        const src_pitch: usize = @intCast(info.fb.dim.width);
+        var idx: usize = 0;
+        for (0..src_width) |x| {
+            for (0..dst_height) |y| {
+                const c = src[(src_height - 1 - y) * src_pitch + x];
+                dst[idx] = c;
+                idx += 1;
+            }
         }
     }
 
     // workaround for compile error 'TODO: implement @ptrCast between slices changing the length'
     // e.g. we want a []u8 view on the [_]u32 pixel data array
-    const dst_u8 = @as([*]u8, @ptrCast(dst_u32))[0 .. dst_u32.len * 4];
+    const dst_u8 = @as([*]u8, @ptrCast(dst))[0 .. dst.len * 4];
     var pixels = zigimg.Image{
         .width = dst_width,
         .height = dst_height,

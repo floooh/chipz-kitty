@@ -17,13 +17,16 @@ zig build --release=fast run-pengo
 ```
 zig build --release=fast run-pacman
 ```
+```
+zig build --release=fast run-bombjack
+```
 
 ## Usage
 
 Press `1` or `F1` to insert a coin, and `Enter` to start.
 
 In the game: `Arrow Keys` for direction and `Space` as fire button
-(push ice block in Pengo).
+(in Pengo: push ice block, in Bombjack: jump).
 
 `Ctrl-C` to quit.
 

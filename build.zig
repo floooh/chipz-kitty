@@ -41,6 +41,15 @@ pub fn build(b: *Build) void {
         .target = target,
         .optimize = optimize,
     });
+    addEmulator(b, .{
+        .name = "bombjack",
+        .root_source_file = "src/bombjack.zig",
+        .mod_chipz = dep_chipz.module("chipz"),
+        .mod_vaxis = dep_vaxis.module("vaxis"),
+        .mod_sokol = dep_sokol.module("sokol"),
+        .target = target,
+        .optimize = optimize,
+    });
 }
 
 const EmulatorOptions = struct {
