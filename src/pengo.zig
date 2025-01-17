@@ -54,8 +54,8 @@ fn keyToButton(key: Key) Pengo.Input {
         Key.up => .{ .p1_up = true },
         Key.down => .{ .p1_down = true },
         Key.space => .{ .p1_button = true },
-        Key.f1 => .{ .p1_coin = true },
-        Key.f2 => .{ .p2_coin = true },
+        Key.f1, '1' => .{ .p1_coin = true },
+        Key.f2, '2' => .{ .p2_coin = true },
         else => .{ .p1_start = true },
     };
 }

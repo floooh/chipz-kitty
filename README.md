@@ -19,7 +19,7 @@ zig build --release=fast run-pengo
 
 ## Usage
 
-Press `F1` to insert a coin, and `Enter` to start.
+Press `1` or `F1` to insert a coin, and `Enter` to start.
 
 In the game: `Arrow Keys` for direction and `Space` to push an ice block.
 
