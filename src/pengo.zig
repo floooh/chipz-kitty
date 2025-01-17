@@ -46,7 +46,7 @@ pub fn main() !void {
     // frame loop
     while (try host.pollEvents()) {
         _ = sys.exec(host.frameTimeMicroSeconds());
-        try host.drawFrame(.{ .display_info = sys.displayInfo() });
+        try host.drawFrame(sys.displayInfo());
         // waiting a couple of millisecs here seems to help with
         // Ghostty not occupying 100% CPU (at least on macOS)
         std.time.sleep(4_000_000);

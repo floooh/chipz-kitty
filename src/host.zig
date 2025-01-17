@@ -24,10 +24,6 @@ pub const InitOptions = struct {
     disable_audio: bool = false,
 };
 
-pub const FrameOptions = struct {
-    display_info: DisplayInfo,
-};
-
 const max_width = 512;
 const max_height = 512;
 const bytes_per_pixel = 3;
@@ -103,7 +99,7 @@ pub fn pushAudio(samples: []const f32) void {
     }
 }
 
-pub fn drawFrame(opts: FrameOptions) !void {
+pub fn drawFrame(display_info: DisplayInfo) !void {
     assert(initialized);
 
     const win = vx.window();
@@ -117,7 +113,7 @@ pub fn drawFrame(opts: FrameOptions) !void {
         return;
     }
 
-    const info = opts.display_info;
+    const info = display_info;
     const landscape = info.orientation == .Landscape;
 
     const src_width: usize = @intCast(info.view.width);
