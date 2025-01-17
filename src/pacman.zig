@@ -3,9 +3,9 @@ const Key = @import("vaxis").Key;
 const namco = @import("chipz").systems.namco;
 const host = @import("host.zig");
 
-const Pengo = namco.Type(.Pengo);
+const Pacman = namco.Type(.Pacman);
 
-var sys: Pengo = undefined;
+var sys: Pacman = undefined;
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -24,20 +24,16 @@ pub fn main() !void {
             .callback = host.pushAudio,
         },
         .roms = .{
-            .sys_0000_0FFF = @embedFile("roms/pengo/ep5120.8"),
-            .sys_1000_1FFF = @embedFile("roms/pengo/ep5121.7"),
-            .sys_2000_2FFF = @embedFile("roms/pengo/ep5122.15"),
-            .sys_3000_3FFF = @embedFile("roms/pengo/ep5123.14"),
-            .sys_4000_4FFF = @embedFile("roms/pengo/ep5124.21"),
-            .sys_5000_5FFF = @embedFile("roms/pengo/ep5125.20"),
-            .sys_6000_6FFF = @embedFile("roms/pengo/ep5126.32"),
-            .sys_7000_7FFF = @embedFile("roms/pengo/ep5127.31"),
-            .gfx_0000_1FFF = @embedFile("roms/pengo/ep1640.92"),
-            .gfx_2000_3FFF = @embedFile("roms/pengo/ep1695.105"),
-            .prom_0000_001F = @embedFile("roms/pengo/pr1633.78"),
-            .prom_0020_041F = @embedFile("roms/pengo/pr1634.88"),
-            .sound_0000_00FF = @embedFile("roms/pengo/pr1635.51"),
-            .sound_0100_01FF = @embedFile("roms/pengo/pr1636.70"),
+            .sys_0000_0FFF = @embedFile("roms/pacman/pacman.6e"),
+            .sys_1000_1FFF = @embedFile("roms/pacman/pacman.6f"),
+            .sys_2000_2FFF = @embedFile("roms/pacman/pacman.6h"),
+            .sys_3000_3FFF = @embedFile("roms/pacman/pacman.6j"),
+            .gfx_0000_0FFF = @embedFile("roms/pacman/pacman.5e"),
+            .gfx_1000_1FFF = @embedFile("roms/pacman/pacman.5f"),
+            .prom_0000_001F = @embedFile("roms/pacman/82s123.7f"),
+            .prom_0020_011F = @embedFile("roms/pacman/82s126.4a"),
+            .sound_0000_00FF = @embedFile("roms/pacman/82s126.1m"),
+            .sound_0100_01FF = @embedFile("roms/pacman/82s126.3m"),
         },
     });
 
@@ -49,7 +45,7 @@ pub fn main() !void {
 }
 
 fn onKey(pressed: bool, key: Key) void {
-    const inp: Pengo.Input = switch (key.codepoint) {
+    const inp: Pacman.Input = switch (key.codepoint) {
         Key.left => .{ .p1_left = true },
         Key.right => .{ .p1_right = true },
         Key.up => .{ .p1_up = true },

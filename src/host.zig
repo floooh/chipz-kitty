@@ -82,12 +82,12 @@ pub fn deinit() void {
     }
 }
 
-pub fn audioSampleRate() i32 {
+pub fn audioSampleRate() u32 {
     assert(initialized);
     if (disable_audio) {
         return 44100;
     } else {
-        return saudio.sampleRate();
+        return @intCast(saudio.sampleRate());
     }
 }
 
@@ -156,6 +156,10 @@ pub fn drawFrame(display_info: DisplayInfo) !void {
         },
     });
     try vx.render(tty.anyWriter());
+
+    // NOTE: waiting a couple of millisecs here seems to help with
+    // Ghostty not occupying 100% CPU (at least on macOS)
+    std.time.sleep(4_000_000);
 }
 
 pub fn pollEvents() !bool {
