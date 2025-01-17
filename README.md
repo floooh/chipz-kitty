@@ -28,6 +28,8 @@ Press `1` or `F1` to insert a coin, and `Enter` to start.
 In the game: `Arrow Keys` for direction and `Space` as fire button
 (in Pengo: push ice block, in Bombjack: jump).
 
+In Bombjack, hit `Space` repeatedly to skip the long boot sequence.
+
 `Ctrl-C` to quit.
 
 ## Dependencies:
