@@ -3,12 +3,12 @@
     .version = "0.0.0",
     .dependencies = .{
         .chipz = .{
-            .url = "git+https://github.com/floooh/chipz.git?ref=0.13.0#e3a9951d5e41a55ca20a44288e40a7624d337a52",
-            .hash = "1220f6fa5c0727b46d434f838100883c630484e3c83d0389b2ab7393833ea5b1d263",
+            .url = "git+https://github.com/floooh/chipz.git#8795ed233475224fed4999c4f9a0da6eb48c95de",
+            .hash = "1220550dd0d7a6a14ad88d7d6ff6acd6c95b6bb1aceadd24e22c95e60de9a96c1668",
         },
         .vaxis = .{
-            .url = "git+https://github.com/rockorager/libvaxis.git#2d5cd811a4e673b3b0d8303512e4934c6ceb6d58",
-            .hash = "1220d49524b81bc8a371237b9b68620c2042a12d1b1492c0cd59148bfbc2873bd542",
+            .url = "git+https://github.com/rockorager/libvaxis.git?ref=zig-0.14.0#73d46b31c74dc5c5b5fc7a5f91e4356b4e418538",
+            .hash = "1220bf1269bf878dc8f9c73de8e5ada8f74940f8b376d9ba06bb00d4166afe7d72c5",
         },
         .sokol = .{
             .url = "git+https://github.com/floooh/sokol-zig.git#3443c2880afdcd8a6ecdd387174544e71c85ba87",

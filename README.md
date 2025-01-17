@@ -9,9 +9,7 @@ Tested in Ghostty and Kitty on macOS.
 
 ## Build and Run
 
-Currently requires `Zig 0.13.0` (because of libvaxis dependency).
-
-In Ghostty or Kitty terminal:
+In a Ghostty or Kitty terminal with Zig version `0.14.0-dev.*`:
 
 ```
 zig build --release=fast run-pengo
