@@ -8,8 +8,14 @@ const Pengo = namco.Type(.Pengo);
 var sys: Pengo = undefined;
 
 pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer {
+        if (gpa.deinit() != .ok) {
+            @panic("Memory leaks detected");
+        }
+    }
     try host.init(.{
-        .allocator = std.heap.c_allocator,
+        .allocator = gpa.allocator(),
         .key_cb = onKey,
     });
     defer host.deinit();
