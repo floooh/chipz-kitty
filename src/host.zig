@@ -38,6 +38,7 @@ var height = undefined;
 var max_rgba_buffer: [max_width * max_height]u32 = undefined;
 var last_time: i64 = undefined;
 var disable_audio = false;
+var tty_buf: [1024]u8 = undefined;
 
 pub fn init(opts: InitOptions) !void {
     assert(!initialized);
@@ -49,7 +50,7 @@ pub fn init(opts: InitOptions) !void {
         saudio.setup(.{});
     }
 
-    tty = try vaxis.Tty.init();
+    tty = try vaxis.Tty.init(&tty_buf);
     errdefer tty.deinit();
 
     vx = try vaxis.init(allocator, .{
@@ -57,15 +58,15 @@ pub fn init(opts: InitOptions) !void {
             .report_events = true,
         },
     });
-    errdefer vx.deinit(allocator, tty.anyWriter());
+    errdefer vx.deinit(allocator, tty.writer());
 
     ev_loop = vaxis.Loop(Event){ .tty = &tty, .vaxis = &vx };
     try ev_loop.init();
     try ev_loop.start();
     errdefer ev_loop.stop();
 
-    try vx.enterAltScreen(tty.anyWriter());
-    try vx.queryTerminal(tty.anyWriter(), 1 * std.time.ns_per_s);
+    try vx.enterAltScreen(tty.writer());
+    try vx.queryTerminal(tty.writer(), 1 * std.time.ns_per_s);
 
     last_time = std.time.microTimestamp();
     initialized = true;
@@ -74,7 +75,7 @@ pub fn init(opts: InitOptions) !void {
 pub fn deinit() void {
     assert(initialized);
     ev_loop.stop();
-    vx.deinit(allocator, tty.anyWriter());
+    vx.deinit(allocator, tty.writer());
     tty.deinit();
     initialized = false;
     if (!disable_audio) {
@@ -105,7 +106,7 @@ pub fn drawFrame(display_info: DisplayInfo) !void {
     if (win.screen.width == 0) {
         while (ev_loop.tryEvent()) |ev| {
             switch (ev) {
-                .winsize => |ws| try vx.resize(allocator, tty.anyWriter(), ws),
+                .winsize => |ws| try vx.resize(allocator, tty.writer(), ws),
                 else => {},
             }
         }
@@ -115,8 +116,8 @@ pub fn drawFrame(display_info: DisplayInfo) !void {
     const info = display_info;
     const landscape = info.orientation == .Landscape;
 
-    const src_width: usize = @intCast(info.view.width);
-    const src_height: usize = @intCast(info.view.height);
+    const src_width: usize = @intCast(info.viewport.width);
+    const src_height: usize = @intCast(info.viewport.height);
     assert(src_width <= max_width);
     assert(src_height <= max_height);
     const dst_width = if (landscape) src_width else src_height;
@@ -159,7 +160,7 @@ pub fn drawFrame(display_info: DisplayInfo) !void {
         .height = dst_height,
         .pixels = try zigimg.color.PixelStorage.initRawPixels(dst_u8, .rgba32),
     };
-    const img = try vx.transmitImage(allocator, tty.anyWriter(), &pixels, .rgba);
+    const img = try vx.transmitImage(allocator, tty.writer(), &pixels, .rgba);
 
     // compute draw-size in cells keeping aspect ratio
     const draw_size = computeDrawSize(win, img, try img.cellSize(win));
@@ -169,11 +170,11 @@ pub fn drawFrame(display_info: DisplayInfo) !void {
             .cols = draw_size.cols,
         },
     });
-    try vx.render(tty.anyWriter());
+    try vx.render(tty.writer());
 
     // NOTE: waiting a couple of millisecs here seems to help with
     // Ghostty not occupying 100% CPU (at least on macOS)
-    std.time.sleep(4_000_000);
+    std.Thread.sleep(4_000_000);
 }
 
 pub fn pollEvents() !bool {
@@ -189,7 +190,7 @@ pub fn pollEvents() !bool {
                 }
             },
             .winsize => |ws| {
-                try vx.resize(allocator, ev_loop.tty.anyWriter(), ws);
+                try vx.resize(allocator, ev_loop.tty.writer(), ws);
             },
         }
     }
