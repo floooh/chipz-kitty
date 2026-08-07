@@ -74,10 +74,8 @@ fn addEmulator(b: *Build, opts: EmulatorOptions) void {
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);
+    run_cmd.addPassthruArgs();
     run_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| {
-        run_cmd.addArgs(args);
-    }
     const run_step = b.step(b.fmt("run-{s}", .{opts.name}), b.fmt("Run {s}", .{opts.name}));
     run_step.dependOn(&run_cmd.step);
 }
