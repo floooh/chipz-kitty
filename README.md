@@ -9,7 +9,7 @@ Tested in Ghostty and Kitty on macOS.
 
 ## Build and Run
 
-In a Ghostty or Kitty terminal with Zig version `0.15.2`:
+In a Ghostty or Kitty terminal with Zig version `0.17.0`:
 
 ```
 zig build --release=fast run-pengo
