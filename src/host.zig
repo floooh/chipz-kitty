@@ -20,6 +20,8 @@ const KeyCallback = fn (down: bool, key: vaxis.Key) void;
 
 pub const InitOptions = struct {
     allocator: std.mem.Allocator,
+    io: std.Io,
+    env: *std.process.Environ.Map,
     key_cb: *const KeyCallback,
     disable_audio: bool = false,
 };
@@ -29,6 +31,8 @@ const max_height = 512;
 
 var initialized = false;
 var allocator: std.mem.Allocator = undefined;
+var io: std.Io = undefined;
+var env: *std.process.Environ.Map = undefined;
 var key_cb: *const KeyCallback = undefined;
 var tty: vaxis.Tty = undefined;
 var vx: vaxis.Vaxis = undefined;
@@ -43,6 +47,8 @@ var tty_buf: [1024]u8 = undefined;
 pub fn init(opts: InitOptions) !void {
     assert(!initialized);
     allocator = opts.allocator;
+    io = opts.io;
+    env = opts.env;
     key_cb = opts.key_cb;
     disable_audio = opts.disable_audio;
 
@@ -50,25 +56,24 @@ pub fn init(opts: InitOptions) !void {
         saudio.setup(.{});
     }
 
-    tty = try vaxis.Tty.init(&tty_buf);
+    tty = try vaxis.Tty.init(opts.io, &tty_buf);
     errdefer tty.deinit();
 
-    vx = try vaxis.init(allocator, .{
+    vx = try vaxis.init(io, allocator, env, .{
         .kitty_keyboard_flags = .{
             .report_events = true,
         },
     });
     errdefer vx.deinit(allocator, tty.writer());
 
-    ev_loop = vaxis.Loop(Event){ .tty = &tty, .vaxis = &vx };
-    try ev_loop.init();
+    ev_loop = vaxis.Loop(Event).init(io, &tty, &vx);
     try ev_loop.start();
     errdefer ev_loop.stop();
 
     try vx.enterAltScreen(tty.writer());
-    try vx.queryTerminal(tty.writer(), 1 * std.time.ns_per_s);
+    try vx.queryTerminal(tty.writer(), std.Io.Duration.fromSeconds(1));
 
-    last_time = std.time.microTimestamp();
+    last_time = std.Io.Clock.awake.now(io).toMicroseconds();
     initialized = true;
 }
 
@@ -104,7 +109,7 @@ pub fn drawFrame(display_info: DisplayInfo) !void {
 
     const win = vx.window();
     if (win.screen.width == 0) {
-        while (ev_loop.tryEvent()) |ev| {
+        while (try ev_loop.tryEvent()) |ev| {
             switch (ev) {
                 .winsize => |ws| try vx.resize(allocator, tty.writer(), ws),
                 else => {},
@@ -174,13 +179,13 @@ pub fn drawFrame(display_info: DisplayInfo) !void {
 
     // NOTE: waiting a couple of millisecs here seems to help with
     // Ghostty not occupying 100% CPU (at least on macOS)
-    std.Thread.sleep(4_000_000);
+    try io.sleep(std.Io.Duration.fromMilliseconds(4), std.Io.Clock.awake);
 }
 
 pub fn pollEvents() !bool {
     assert(initialized);
     var running = true;
-    while (ev_loop.tryEvent()) |ev| {
+    while (try ev_loop.tryEvent()) |ev| {
         switch (ev) {
             .key_press, .key_release => |key| {
                 if (key.matches('c', .{ .ctrl = true })) {
@@ -199,7 +204,7 @@ pub fn pollEvents() !bool {
 
 pub fn frameTimeMicroSeconds() u32 {
     assert(initialized);
-    const cur_time = std.time.microTimestamp();
+    const cur_time = std.Io.Clock.awake.now(io).toMicroseconds();
     const frame_time = std.math.clamp(cur_time - last_time, 1000, 24000);
     last_time = cur_time;
     return @intCast(frame_time);

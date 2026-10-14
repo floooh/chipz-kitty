@@ -5,13 +5,11 @@ const host = @import("host.zig");
 
 var sys: Bombjack = undefined;
 
-pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer if (gpa.deinit() != .ok) {
-        @panic("Memory leaks detected!");
-    };
+pub fn main(ini: std.process.Init) !void {
     try host.init(.{
-        .allocator = gpa.allocator(),
+        .allocator = ini.gpa,
+        .io = ini.io,
+        .env = ini.environ_map,
         .key_cb = onKey,
     });
     defer host.deinit();
