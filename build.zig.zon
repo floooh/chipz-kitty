@@ -5,16 +5,16 @@
     .minimum_zig_version = "0.17.0",
     .dependencies = .{
         .chipz = .{
-            .url = "git+https://github.com/floooh/chipz.git#c7a7c007e1732e89748b0e11c7ec07c39986a027",
-            .hash = "chipz-0.0.0-gW-vWz8vDgAOtMwksw42iqxEkDqla86OFBgbVhv90enu",
+            .url = "git+https://github.com/floooh/chipz.git#07f31e8ffa7ce30c92d4d23582b96974cf780de0",
+            .hash = "chipz-0.0.0-gW-vWz8vDgDEb_A-BrGaGL85BWEgjBcsKmsxGifR94Vk",
         },
         .vaxis = .{
             .url = "git+https://github.com/rockorager/libvaxis.git#733151bc205ba5fe1504969dfe95f81420812f8c",
             .hash = "vaxis-0.6.0-BWNV_E4QDQChkJdI41RehZ8CS67EJbCTy43904zntvcY",
         },
         .sokol = .{
-            .url = "git+https://github.com/floooh/sokol-zig.git#431fc7562750d3b0c075012ce86af01d32114271",
-            .hash = "sokol-0.1.0-pb1HK7MiQwDfThW18meY85Xe55lPBqONkqVPc8P2L1WS",
+            .url = "git+https://github.com/floooh/sokol-zig.git#aa05f58d1d2aa225f5d7f6349838ca301de4939b",
+            .hash = "sokol-0.1.0-pb1HK0wTQwByM5efnG8xSuGl_Opo03DuAszjk-iMBJXv",
         },
     },
     .paths = .{
